@@ -74,10 +74,11 @@ class FSMParams(Params):
             n1 = randrange(nodes)
             n2 = randrange(nodes)
             for j, row in enumerate(rows):
-                if row[1] == n1:
-                    row[1] = n2
-                elif row[1] == n2:
-                    row[1] = n1
+                if row[0] == n1:
+                    row[0] = n2
+                elif row[0] == n2:
+                    row[0] = n1
+            rows.sort(key=lambda x: (x[0], 0 if x[1]==C else 1))
         return rows
 
     def mutate(self):
