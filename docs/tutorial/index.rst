@@ -47,9 +47,9 @@ We can now evolve our population::
     Scoring Generation 2
     Generation 2 | Best Score: 2.1 0:C:0_C_0_C:0_D_1_C:1_C_1_D:1_D_1_D
     Scoring Generation 3
-    Generation 3 | Best Score: 2.2 0:C:0_C_0_C:0_D_1_D:1_C_1_D:1_D_1_D
+    Generation 3 | Best Score: 2.1 0:C:0_C_0_C:0_D_1_C:1_C_1_D:1_D_1_D
     Scoring Generation 4
-    Generation 4 | Best Score: 2.2 0:C:0_C_0_C:0_D_1_D:1_C_1_D:1_D_1_D
+    Generation 4 | Best Score: 2.1 0:C:0_C_0_C:0_D_1_C:1_C_1_D:1_D_1_D
 
 The :code:`run` command prints out the progress of the algorithm and this is
 also written to the output file (we passed :code:`output_filename` as an
