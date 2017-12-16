@@ -182,3 +182,48 @@ class HMMParams(Params):
                    emission_probabilities=p,
                    initial_state=initial_state,
                    initial_action=initial_action)
+
+    def receive_vector(self, vector):
+        """Receives a vector and creates an instance attribute called
+        vector."""
+        
+        self.vector = vector
+
+    def vector_to_instance(self):
+        """Turns the attribute vector in to a HMM player instance.
+
+        ..."""
+
+        # Length of vector = 2n^2 + n + 1
+        a, b, c = 2, 1, 1 - len(self.vector)
+        num_states = int( (- b + np.sqrt(b ** 2 - 4 * a * c)) / (2 * a) )
+
+        def deserialize(vector):
+            matrix = []
+            for i in range(num_states):
+                row = vector[num_states * i:num_states * (i + 1) - 1]
+                row = normalize_vector(row)
+                matrix.append(row)
+            return matrix
+
+        t_C = deserialize(self.vector[0:num_states ** 2 - 1])
+        t_D = deserialize(self.vector[num_states ** 2:2 * num_states ** 2 - 1])
+        p = normalize_vector(self.vector[2 * num_states ** 2:2 * num_states ** 2 + num_states - 1])
+        starting_move = C if round(self.vector[-1]) == 0 else D
+
+        # Use the default initial state.
+        return HMMPlayer(transitions_C=t_C,
+                         transitions_D=t_D,
+                         emission_probabilities=p,
+                         initial_action=starting_move)
+
+    def create_vector_bounds(self):
+        """Creates the bounds for the decision variables."""
+        
+        N = len(self.transitions_C)
+        size = 2 * N ** 2 + N + 1
+
+        lb = [0] * size
+        ub = [1] * size
+
+        return lb, ub
