@@ -23,7 +23,7 @@ class TestHMMParams(unittest.TestCase):
                                initial_action=C)
         self.assertEqual(hmm_params.PlayerClass, axl.HMMPlayer)
         self.assertEqual(hmm_params.num_states, num_states)
-        self.assertEqual(hmm_params.mutation_rate, 2.5)
+        self.assertEqual(hmm_params.mutation_probability, 2.5)
         self.assertEqual(hmm_params.transitions_C, t_C)
         self.assertEqual(hmm_params.transitions_D, t_D)
         self.assertEqual(hmm_params.emission_probabilities, p)
