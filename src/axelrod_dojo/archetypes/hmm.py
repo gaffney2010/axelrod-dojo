@@ -26,6 +26,9 @@ def random_vector(size):
 
 def normalize_vector(vec):
     s = sum(vec)
+    if s == 0.0:
+        n = len(vec)
+        return [1 /n for v in vec]
     vec = [v / s for v in vec]
     return vec
 
@@ -51,18 +54,20 @@ def read_vector(vector, num_states):
     num_states entries are the emission_probabilities vector.  Finally the last
     entry is the initial_action.
     """
+    
+    assert(len(vector) == 2 * num_states ** 2 + num_states + 1)
 
     def deserialize(vector):
         matrix = []
         for i in range(num_states):
-            row = vector[num_states * i:num_states * (i + 1) - 1]
+            row = vector[num_states * i:num_states * (i + 1)]
             row = normalize_vector(row)
             matrix.append(row)
         return matrix
 
-    t_C = deserialize(vector[0:num_states ** 2 - 1])
-    t_D = deserialize(vector[num_states ** 2:2 * num_states ** 2 - 1])
-    p = normalize_vector(vector[2 * num_states ** 2:2 * num_states ** 2 + num_states - 1])
+    t_C = deserialize(vector[0:num_states ** 2])
+    t_D = deserialize(vector[num_states ** 2:2 * num_states ** 2])
+    p = normalize_vector(vector[2 * num_states ** 2:2 * num_states ** 2 + num_states])
     starting_move = C if round(vector[-1]) == 0 else D
 
     return t_C, t_D, p, starting_move
@@ -228,7 +233,7 @@ class HMMParams(Params):
 
         # Length of vector = 2n^2 + n + 1
         a, b, c = 2, 1, 1 - len(self.vector)
-        num_states = int( (- b + np.sqrt(b ** 2 - 4 * a * c)) / (2 * a) )
+        num_states = int(round( (- b + np.sqrt(b ** 2 - 4 * a * c)) / (2 * a) ))
 
         t_C, t_D, p, starting_move = read_vector(self.vector, num_states)
 

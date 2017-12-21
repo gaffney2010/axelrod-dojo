@@ -22,8 +22,8 @@ Options:
     --noise NOISE               Match noise [default: 0.00]
     --nmoran NMORAN             Moran Population Size, if Moran objective [default: 4]
     --states NUM_STATES         Number of FSM states [default: 5]
-    --algorithm ALGORITHM       Which algorithm to use (GA for genetic algorithm or PSO for
-                                particle swarm algorithm) [default: GA]
+    --algorithm ALGORITHM       Which algorithm to use (EA for evolutionary algorithm or PS for
+                                particle swarm algorithm) [default: EA]
 """
 
 from docopt import docopt
@@ -54,11 +54,11 @@ if __name__ == '__main__':
 
     # HMM
     num_states = int(arguments['--states'])
-    param_kwargs = {"num_states": num_states}
+    params_kwargs = {"num_states": num_states}
 
-    if arguments['--algorithm'] == "PSO":
+    if arguments['--algorithm'] == "PS":
         objective = prepare_objective(name, turns, noise, repetitions, nmoran)
-        pso = PSO(HMMParams, param_kwargs, objective=objective,
+        pso = PSO(HMMParams, params_kwargs, objective=objective,
                   population=population, generations=generations)
 
         xopt_helper, fopt = pso.swarm()
@@ -71,7 +71,7 @@ if __name__ == '__main__':
                          initial_action=starting_move)
     else:
         objective = prepare_objective(name, turns, noise, repetitions, nmoran)
-        population = Population(HMMParams, param_kwargs, population, objective,
+        population = Population(HMMParams, params_kwargs, population, objective,
                                 output_filename, bottleneck, mutation_probability,
                                 processes=processes)
         population.run(generations)

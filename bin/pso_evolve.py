@@ -54,13 +54,13 @@ if __name__ == "__main__":
     plays = int(arguments['--plays'])
     op_plays = int(arguments['--op_plays'])
     op_start_plays = int(arguments['--op_start_plays'])
-    param_kwargs = {"plays": plays,
+    params_kwargs = {"plays": plays,
                     "op_plays": op_plays,
                     "op_state_plays": op_start_plays}
 
     objective = prepare_objective(name, turns, noise, repetitions, nmoran)
 
-    pso = PSO(GamblerParams, param_kwargs, objective=objective,
+    pso = PSO(GamblerParams, params_kwargs, objective=objective,
               population=population, generations=generations)
 
     xopt, fopt = pso.swarm()

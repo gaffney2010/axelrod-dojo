@@ -51,9 +51,44 @@ The crossover and mutation are implemented in the following way:
 - Crossover: this is done by taking a randomly selected number of target
   state/actions
   pairs from one individual and the rest from the other.
-- Mutation: given a mutation probability :math:`delta` each target state/action
+- Mutation: given a mutation probability :math:`\delta` each target state/action
   has a probability :math:`\delta` of being randomly changed to one of the other
   states or actions. Furthermore the **initial** action has a probability of
   being swapped of :math:`\delta\times 10^{-1}` and the **initial** state has a
   probability of being changed to another random state of :math:`\delta \times
   10^{-1} \times N` (where :math:`N` is the number of states).
+
+Hidden Markov models
+---------------------
+
+A hidden Markov model is made up of the following:
+
+- a mapping from a state/action pair to a probability of defect or cooperation.
+- a cooperation transition matrix, the probability of transitioning to each
+  state, given current state and an opponent cooperation.
+- a defection transition matrix, the probability of transitioning to each
+  state, given current state and an opponent defection.
+- an initial state/action pair.
+
+(See [Harper2017]_ for more details.)
+
+The crossover and mutation are implemented in the following way:
+
+- Crossover: this is done by taking a randomly selected number of rows from
+  one cooperation transition matrix and the rest from the other to form a target
+  cooperation transition matrix; then a different number of randomly selected
+  rows from one defection transition matrix and the restf from the other; and
+  then a randomly select number of entries from one state/part -> probability
+  mapping and the rest from the other.
+- Mutation: given a mutation probability :math:`delta` each cell of both
+  transition matrices and the state/part -> probability mapping have probability
+  :math:`delta` of being increased by :math:`varepsilon`, where
+  :math:`varepsilon` is randomly drawn uniformly from :math:`[-0.25, 0.25]`
+  (A negative number would decrease.)  Then the transition matrices and mapping
+  are adjusted so that no cell is outside :math:`[0, 1]` and the transition
+  matrices are normalized so that each row adds to 1. Furthermore the
+  **initial** action has a probability of being swapped of
+  :math:`\delta\times 10^{-1}` and the **initial** state has a probability of
+  being changed to another random state of
+  :math:`\delta \times 10^{-1} \times N` (where :math:`N` is the number of
+  states).
