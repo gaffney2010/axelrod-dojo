@@ -30,7 +30,6 @@ from docopt import docopt
 
 from axelrod_dojo import HMMParams, Population, prepare_objective
 from axelrod_dojo.algorithms.particle_swarm_optimization import PSO
-from axelrod_dojo.archetypes.hmm import read_vector
 
 
 if __name__ == '__main__':
@@ -59,16 +58,12 @@ if __name__ == '__main__':
     if arguments['--algorithm'] == "PS":
         objective = prepare_objective(name, turns, noise, repetitions, nmoran)
         pso = PSO(HMMParams, params_kwargs, objective=objective,
-                  population=population, generations=generations)
+                  population=population, generations=generations,
+                  size=num_states)
 
         xopt_helper, fopt = pso.swarm()
-        t_C, t_D, p, starting_move = read_vector(xopt_helper, num_states)
-        xopt = HMMParams(num_states=num_states,
-                         transitions_C=t_C,
-                         transitions_D=t_D,
-                         emission_probabilities=p,
-                         initial_state=0,
-                         initial_action=starting_move)
+        xopt = HMMParams(num_states=num_states)
+        xopt.read_vector(xopt_helper, num_states)
     else:
         objective = prepare_objective(name, turns, noise, repetitions, nmoran)
         population = Population(HMMParams, params_kwargs, population, objective,

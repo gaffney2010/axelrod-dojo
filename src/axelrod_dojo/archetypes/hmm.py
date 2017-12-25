@@ -44,34 +44,6 @@ def mutate_row(row, mutation_probability):
                 row[i] = 1
     return row
 
-def read_vector(vector, num_states):
-    """
-    Read a serialized vector into the set of HMM parameters (less initial
-    state).
-
-    Assume the first num_states^2 entries are the transitions_C matrix.  The
-    next num_states^2 entries are the transitions_D matrix.  Then the next
-    num_states entries are the emission_probabilities vector.  Finally the last
-    entry is the initial_action.
-    """
-    
-    assert(len(vector) == 2 * num_states ** 2 + num_states + 1)
-
-    def deserialize(vector):
-        matrix = []
-        for i in range(num_states):
-            row = vector[num_states * i:num_states * (i + 1)]
-            row = normalize_vector(row)
-            matrix.append(row)
-        return matrix
-
-    t_C = deserialize(vector[0:num_states ** 2])
-    t_D = deserialize(vector[num_states ** 2:2 * num_states ** 2])
-    p = normalize_vector(vector[2 * num_states ** 2:2 * num_states ** 2 + num_states])
-    starting_move = C if round(vector[-1]) == 0 else D
-
-    return t_C, t_D, p, starting_move
-
 
 class HMMParams(Params):
 
@@ -215,41 +187,41 @@ class HMMParams(Params):
                    initial_action=initial_action)
 
     def receive_vector(self, vector):
-        """Receives a vector and creates an instance attribute called
-        vector."""
-
-        self.vector = vector
-
-    def vector_to_instance(self):
         """
-        Turns the attribute vector in to a HMM player instance.
+        Read a serialized vector into the set of HMM parameters (less initial
+        state).  Then assign those HMM parameters to this class instance.
 
-        First determine how many states there are by reverse engineering
-        size = 2 * N ** 2 + N + 1
+        Assert that the vector has the right number of elements for an HMMParams
+        class with self.num_states.
 
-        Then run self.vector through read_vector, and pass the output
-        to HMMPlayer from Axelrod strategies.  Return this.
+        Assume the first num_states^2 entries are the transitions_C matrix.  The
+        next num_states^2 entries are the transitions_D matrix.  Then the next
+        num_states entries are the emission_probabilities vector.  Finally the last
+        entry is the initial_action.
         """
 
-        # Length of vector = 2n^2 + n + 1
-        a, b, c = 2, 1, 1 - len(self.vector)
-        num_states = int(round( (- b + np.sqrt(b ** 2 - 4 * a * c)) / (2 * a) ))
+        assert(len(vector) == 2 * self.num_states ** 2 + self.num_states + 1)
 
-        t_C, t_D, p, starting_move = read_vector(self.vector, num_states)
+        def deserialize(vector):
+            matrix = []
+            for i in range(self.num_states):
+                row = vector[self.num_states * i:self.num_states * (i + 1)]
+                row = normalize_vector(row)
+                matrix.append(row)
+            return matrix
 
-        # Use the default initial state.
-        return HMMPlayer(transitions_C=t_C,
-                         transitions_D=t_D,
-                         emission_probabilities=p,
-                         initial_action=starting_move)
+        self.transitions_C = deserialize(vector[0:self.num_states ** 2])
+        self.transitions_D = deserialize(vector[self.num_states ** 2:2 * self.num_states ** 2])
+        self.emission_probabilities = normalize_vector(vector[2 * self.num_states ** 2:2 * self.num_states ** 2 + self.num_states])
+        self.initial_action = C if round(vector[-1]) == 0 else D
+        self.initial_state = 0
 
     def create_vector_bounds(self):
         """Creates the bounds for the decision variables."""
 
-        N = len(self.transitions_C)
-        size = 2 * N ** 2 + N + 1
+        vec_len = 2 * self.num_states ** 2 + self.num_states + 1
 
-        lb = [0] * size
-        ub = [1] * size
+        lb = [0.0] * vec_len
+        ub = [1.0] * vec_len
 
         return lb, ub

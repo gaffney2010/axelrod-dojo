@@ -322,24 +322,14 @@ class TestHMM(unittest.TestCase):
         self.assertTrue(len(xopt) == 2 * num_states ** 2 + num_states + 1)
 
         # You can put the optimal vector back into a HMM.
-        t_C, t_D, p, starting_move = dojo.archetypes.hmm.read_vector(xopt, num_states)
-        simple_hmm_opt = axl.HMMPlayer(transitions_C=t_C,
-                                       transitions_D=t_D,
-                                       emission_probabilities=p,
-                                       initial_state=0,
-                                       initial_action=starting_move)
-        self.assertTrue(simple_hmm_opt.hmm.is_well_formed())  # This should get asserted in initialization anyway
+        simple_hmm_opt = dojo.HMMParams(num_states=num_states)
+        simple_hmm_opt.receive_vector(xopt)
+        simple_player = simple_hmm_opt.player()
+        self.assertTrue(simple_player.hmm.is_well_formed())  # This should get asserted in initialization anyway
         
-        hmm_opt = dojo.HMMParams(num_states=num_states,
-                         transitions_C=t_C,
-                         transitions_D=t_D,
-                         emission_probabilities=p,
-                         initial_state=0,
-                         initial_action=starting_move)
-
-        self.assertIsInstance(hmm_opt, dojo.HMMParams)
+        self.assertIsInstance(simple_hmm_opt, dojo.HMMParams)
         print(xopt)  # As a vector still
-        print(hmm_opt)  # As a HMM
+        print(simple_hmm_opt)  # As a HMM
 
     def test_pso_to_ea(self):
         name = "score"
@@ -372,13 +362,8 @@ class TestHMM(unittest.TestCase):
             xopt, fopt = pso.swarm()
 
             # You can put the optimal vector back into a HMM.
-            t_C, t_D, p, starting_move = dojo.archetypes.hmm.read_vector(xopt, num_states)
-            hmm_opt = dojo.HMMParams(num_states=num_states,
-                             transitions_C=t_C,
-                             transitions_D=t_D,
-                             emission_probabilities=p,
-                             initial_state=0,
-                             initial_action=starting_move)
+            hmm_opt = dojo.HMMParams(num_states=num_states)
+            hmm_opt.receive_vector(xopt)
 
             winners.append(hmm_opt)
             

@@ -36,17 +36,19 @@ class GamblerParams(Params):
             # Make sure to copy the lists
             self.pattern = pattern
 
+    def player(self):
+        """Turns the attribute vector in to a Gambler player instance."""
+        player = self.PlayerClass(pattern=self.vector)
+        return player
+
     def receive_vector(self, vector):
         """Receives a vector and creates an instance attribute called
-        vector."""
+        vector.  Ignores extra parameters."""
         self.vector = vector
 
-    def vector_to_instance(self):
-        """Turns the attribute vector in to a Gambler player instance."""
-        return Gambler(pattern=self.vector)
-
     def create_vector_bounds(self):
-        """Creates the bounds for the decision variables."""
+        """Creates the bounds for the decision variables.  Ignores extra
+        parameters."""
         size = len(self.pattern)
         lb = [0.0] * size
         ub = [1.0] * size

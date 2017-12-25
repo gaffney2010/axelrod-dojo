@@ -41,7 +41,7 @@ class PSO(object):
 
         def objective_function(vector):
             params.receive_vector(vector=vector)
-            instance_generation_function = 'vector_to_instance'
+            instance_generation_function = 'player'
 
             return - score_params(params=params, objective=self.objective,
                                   opponents_information=self.opponents_information,
