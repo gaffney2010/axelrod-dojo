@@ -46,7 +46,7 @@ class TestGamblerParams(unittest.TestCase):
                                        op_start_plays=op_start_plays)
 
         gambler_params.receive_vector([random.random() for _ in range(8)])
-        instance = gambler_params.vector_to_instance()
+        instance = gambler_params.player()
 
         self.assertIsInstance(instance, axl.Gambler)
 
