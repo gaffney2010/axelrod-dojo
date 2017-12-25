@@ -234,18 +234,12 @@ class TestHMM(unittest.TestCase):
             self.assertEqual(best[0].__repr__(), best_params)
 
     def test_score_with_particular_players(self):
-        """
-        These are players that are known to be difficult to pickle
-        """
         name = "score"
         turns = 10
         noise = 0
         repetitions = 5
         num_states = 2
-        opponents = [axl.ThueMorse(),
-                     axl.MetaHunter(),
-                     axl.BackStabber(),
-                     axl.Alexei()]
+        opponents = [s() for s in axl.basic_strategies]
         size = 10
 
         objective = dojo.prepare_objective(name=name,
