@@ -227,7 +227,7 @@ class TestHMMParams(unittest.TestCase):
         hmm_params = HMMParams(num_states=num_states)
         hmm_params.receive_vector(vector=vector)
 
-        instance = hmm_params.vector_to_instance()
+        instance = hmm_params.player()
         self.assertIsInstance(instance, axl.HMMPlayer)
 
     def test_create_vector_bounds(self):
