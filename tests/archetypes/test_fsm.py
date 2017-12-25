@@ -148,11 +148,11 @@ class TestFSMParams(unittest.TestCase):
     def test_vector_to_instance(self):
 
         num_states = 4
-        vector = [random.random() for _ in range(num_states * 4)]
+        vector = [random.random() for _ in range(num_states * 4 + 1)]
         fsm_params = FSMParams(num_states=4)
         fsm_params.receive_vector(vector=vector)
 
-        instance = fsm_params.vector_to_instance()
+        instance = fsm_params.player()
 
         self.assertIsInstance(instance, axl.FSMPlayer)
 
