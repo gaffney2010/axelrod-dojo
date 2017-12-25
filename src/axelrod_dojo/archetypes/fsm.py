@@ -140,12 +140,9 @@ class FSMParams(Params):
         return cls(num_states, rows, initial_state, initial_action)
 
     def receive_vector(self, vector):
-        """Receives a vector and creates an instance attribute called
-        vector."""
-        self.vector = vector
-
-    def vector_to_instance(self):
-        """Turns the attribute vector in to a FSM player instance.
+        """
+        Read a serialized vector into the set of FSM parameters (less initial
+        state).  Then assign those FSM parameters to this class instance.
 
         The vector has three parts. The first is used to define the next state 
         (for each of the player's states - for each opponents action).
@@ -153,21 +150,20 @@ class FSMParams(Params):
         The second part is the player's next moves (for each state - for 
         each opponent's actions).
 
-        Finally, a probability to determine the player's first move."""
+        Finally, a probability to determine the player's first move.
+        """
+        state_scale = vector[:self.num_states * 2]
+        next_states = [int(s * (self.num_states - 1)) for s in state_scale]
+        actions = vector[self.num_states * 2: -1]
+        
+        self.initial_action = C if round(vector[-1]) == 0 else D
+        self.initial_state = 1
 
-        num_states = int((len(self.vector) - 1) / 4)
-        state_scale = self.vector[:num_states * 2]
-        next_states = [int(s * (num_states - 1)) for s in state_scale]
-        actions = self.vector[num_states * 2: -1]
-        starting_move = C if round(self.vector[-1]) == 0 else D
-
-        fsm = []
+        self.rows = []
         for i, (initial_state, action) in enumerate(
-                itertools.product(range(num_states), [C, D])):
+                itertools.product(range(self.num_states), [C, D])):
             next_action = C if round(actions[i]) == 0 else D
-            fsm.append([initial_state, action, next_states[i], next_action])
-
-        return FSMPlayer(fsm, initial_action=starting_move)
+            self.rows.append([initial_state, action, next_states[i], next_action])
 
     def create_vector_bounds(self):
         """Creates the bounds for the decision variables."""
