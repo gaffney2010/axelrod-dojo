@@ -77,7 +77,7 @@ The crossover and mutation are implemented in the following way:
 - Crossover: this is done by taking a randomly selected number of rows from
   one cooperation transition matrix and the rest from the other to form a target
   cooperation transition matrix; then a different number of randomly selected
-  rows from one defection transition matrix and the restf from the other; and
+  rows from one defection transition matrix and the rest from the other; and
   then a randomly select number of entries from one state/part -> probability
   mapping and the rest from the other.
 - Mutation: given a mutation probability :math:`delta` each cell of both
