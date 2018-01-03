@@ -158,7 +158,7 @@ class TestHMM(unittest.TestCase):
         population.run(generations)
         self.assertEqual(population.generation, 4)
 
-        # Manually read from tempo file to find best strategy
+        # Manually read from temp file to find best strategy
         best_score, best_params = 0, None
         with open(self.temporary_file.name, "r") as f:
             reader = csv.reader(f)

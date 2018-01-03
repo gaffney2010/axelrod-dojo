@@ -28,11 +28,16 @@ def normalize_vector(vec):
     s = sum(vec)
     if s == 0.0:
         n = len(vec)
-        return [1 /n for v in vec]
+        return [1 / n for v in vec]
     vec = [v / s for v in vec]
     return vec
 
 def mutate_row(row, mutation_probability):
+    """
+    Given a row of probabilities, randomly change each entry with probability
+    `mutation_probability`.  Then if changing, then change by a value randomly
+    (uniformly) chosen from [-0.25, 0.25] bounded by 0 and 100%.
+    """
     randoms = np.random.random(len(row))
     for i in range(len(row)):
         if randoms[i] < mutation_probability:
@@ -205,14 +210,17 @@ class HMMParams(Params):
         def deserialize(vector):
             matrix = []
             for i in range(self.num_states):
-                row = vector[self.num_states * i:self.num_states * (i + 1)]
+                row = vector[self.num_states * i: self.num_states * (i + 1)]
                 row = normalize_vector(row)
                 matrix.append(row)
             return matrix
 
-        self.transitions_C = deserialize(vector[0:self.num_states ** 2])
-        self.transitions_D = deserialize(vector[self.num_states ** 2:2 * self.num_states ** 2])
-        self.emission_probabilities = normalize_vector(vector[2 * self.num_states ** 2:2 * self.num_states ** 2 + self.num_states])
+        break_tc = self.num_states ** 2
+        break_td = 2 * self.num_states ** 2
+        break_ep = 2 * self.num_states ** 2 + self.num_states
+        self.transitions_C = deserialize(vector[0:break_tc])
+        self.transitions_D = deserialize(vector[break_tc:break_td])
+        self.emission_probabilities = normalize_vector(vector[break_td:break_ep])
         self.initial_action = C if round(vector[-1]) == 0 else D
         self.initial_state = 0
 

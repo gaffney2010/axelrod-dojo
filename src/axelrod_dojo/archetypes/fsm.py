@@ -153,7 +153,7 @@ class FSMParams(Params):
         Finally, a probability to determine the player's first move.
         """
         state_scale = vector[:self.num_states * 2]
-        next_states = [int(s * (self.num_states - 1)) for s in state_scale]
+        next_states = [s * (self.num_states - 1) for s in state_scale]
         actions = vector[self.num_states * 2: -1]
         
         self.initial_action = C if round(vector[-1]) == 0 else D
