@@ -35,8 +35,9 @@ def normalize_vector(vec):
 def mutate_row(row, mutation_probability):
     """
     Given a row of probabilities, randomly change each entry with probability
-    `mutation_probability`.  Then if changing, then change by a value randomly
-    (uniformly) chosen from [-0.25, 0.25] bounded by 0 and 100%.
+    `mutation_probability` (a value between 0 and 1).  If changing, then change
+    by a value randomly (uniformly) chosen from [-0.25, 0.25] bounded by 0 and
+    100%.
     """
     randoms = np.random.random(len(row))
     for i in range(len(row)):
